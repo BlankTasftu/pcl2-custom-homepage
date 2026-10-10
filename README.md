@@ -73,7 +73,6 @@
 ```
 
 <img src="assets/preview.png" width="360" alt="preview">
-"[主页预览](assets/preview.png)"
 
 ## 快速开始
 
