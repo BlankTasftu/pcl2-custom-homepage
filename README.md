@@ -149,8 +149,8 @@
 
 - **竖线不能省**：`EventData` 的格式是「命令|参数」。少了 `|`，PCL 会把整串当成程序路径去找，点击必定失败
 - **路径两头加 `&quot;`**：路径里可能有空格（比如版本文件夹叫 `SCB 1.20.1 Fabric`），加引号能避免打开失败，PCL 官方也这么建议
-- **PCL 版本太老时**：如果按钮点了没反应且日志报「执行失败」，说明你的 PCL 不认识这个标记，把路径改回写死的完整路径即可，例如 `explorer\| D:\Minecraft\.minecraft\mods`
-
+- **PCL 版本太老时**：如果按钮点了没反应且日志报「执行失败」，说明你的 PCL 不认识这个标记，把路径改回写死的完整路径即可，例如 `explorer| ..\.minecraft\mods`
+                                                                                                 如果你开了版本隔离就是`explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric"版本名称"\mods`
 更多替换标记（版本号、玩家名、日期、自定义变量……）见 [docs/customize.md](docs/customize.md#替换标记速查)。
 
 ## 常见问题
