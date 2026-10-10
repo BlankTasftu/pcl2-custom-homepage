@@ -21,7 +21,7 @@
          8  公告卡片：整合包版本号
          9  公告卡片：更新内容
         10  公告卡片：署名
-        11  懒人面板：6 个文件夹按钮的路径
+        11  懒人面板：6 个文件夹按钮指向的文件夹（默认已适配任意整合包，一般不用改）
         12  两张图片的直链
 
       【语法提示】 local: 开头的是 PCL 内置控件：MyCard 卡片、MyHint 提示条、
@@ -36,11 +36,11 @@
 -->
 
 <!-- ==================== 区块 1 / 4：顶部版本提示条 ==================== -->
-<!-- 常驻在主页最上方，显示当前 PCL 版本。{pcl_version} 会被 PCL 自动替换成版本号。 -->
+<!-- 常驻在主页最上方，显示当前 PCL 版本。{pcl_version} 由 PCL 自动替换；文字颜色用主题画刷 ColorBrush1，跟着 PCL 主题走，深色主题下也看得清。 -->
 <!-- 【改我 1】把下面的 XXX 换成你的服务器名称 -->
 <Border Margin="0,0,0,5" Padding="2,8" BorderThickness="1" Background="{DynamicResource ColorBrush5}" CornerRadius="5" VerticalAlignment="Top" BorderBrush="{DynamicResource ColorBrush3}" Opacity="0.7">
       <Grid Margin="10,0,0,0">
-               <TextBlock x:Name="NewsHint" FontWeight="Bold" FontSize="12" VerticalAlignment="Center" Foreground="#FF000000">
+               <TextBlock x:Name="NewsHint" FontWeight="Bold" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource ColorBrush1}">
                        📰欢迎游玩XXX  您当前PCL启动器版本为{pcl_version}
                </TextBlock>
       </Grid>
@@ -101,31 +101,34 @@
         <local:MyHint Margin="0,0,0,7" IsWarn="False" Text="为找不到文件夹的小白准备的打开文件夹功能" />
         <local:MyHint Margin="0,0,0,7" Text="MOD是.jar文件 材质和光影是.zip文件 不需要解压！" />
         <!-- ========== 文件夹按钮 ==========
-             【改我 11】EventData 的写法是「命令|参数」：
-               explorer 是 Windows 资源管理器，"|" 后面就是要打开的路径。
-             现在的路径 ..\.minecraft\versions\SCB 1.20.1 Fabric\mods 是按本整合包
-             的名字写死的，换整合包或换版本名就会失效。
-             想让它对任何版本名都生效，可以改用 PCL 的「版本隔离文件夹」替换标记，
-             写法见 docs/customize.md 里的「懒人面板路径怎么写」。 -->
+             【改我 11】EventData 的写法是「命令|参数」：explorer 是 Windows 资源管理器，
+             竖线后面是要打开的文件夹。竖线不能省，省了 PCL 会把整串当成程序路径去找。
+             6 个路径都用 PCL 的「版本隔离文件夹」替换标记拼出来，所以换整合包、改版本名、
+             开不开版本隔离都不用改这里：
+               {version_indie}mods              {version_indie}resourcepacks
+               {version_indie}shaderpacks       {version_indie}replay_recordings
+               {version_indie}schematics        {version_indie}saves
+             路径两头用 &quot; 包起来，避免路径里的空格导致打开失败（PCL 官方也建议这么做）。
+             想换成别的文件夹，改竖线后面那一截即可。详见 docs/customize.md。 -->
         <!-- 这是第一行 -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0"
-                   Text="打开MOD文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\mods" ToolTip="安装MOD时.jar文件应该放到这里" />
+                   Text="打开MOD文件夹" EventType="执行命令" EventData="explorer|&quot;{version_indie}mods&quot;" ToolTip="安装MOD时.jar文件应该放到这里" />
             <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0"
-                   Text="打开材质文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\resourcepacks" ToolTip="安装的材质包.zip .rar等压缩包要放到这里" />
+                   Text="打开材质文件夹" EventType="执行命令" EventData="explorer|&quot;{version_indie}resourcepacks&quot;" ToolTip="安装的材质包.zip .rar等压缩包要放到这里" />
             <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0"
-                   Text="打开光影文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\shaderpacks" ToolTip="安装的光影包.zip .rar等压缩包要放到这里" />
+                   Text="打开光影文件夹" EventType="执行命令" EventData="explorer|&quot;{version_indie}shaderpacks&quot;" ToolTip="安装的光影包.zip .rar等压缩包要放到这里" />
         </StackPanel>
         <!-- 这是第二行 -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
             <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0" ColorType="Highlight"
-                   Text="打开Replay文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\replay_recordings" ToolTip="回放MOD的录像文件在这里记得发给狗腐竹" />
+                   Text="打开Replay文件夹" EventType="执行命令" EventData="explorer|&quot;{version_indie}replay_recordings&quot;" ToolTip="回放MOD的录像文件在这里记得发给狗腐竹" />
             <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0" ColorType="Red"
-                   Text="打开蓝图文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\schematics" ToolTip="装载的蓝图文件要放到这里" />
-            <!-- 修复记录：这一行的 EventData 原本漏了「|」，PCL 会把整串当成进程路径去找，
-                 点击必定失败。现已补上与其它按钮一致的分隔符。 -->
+                   Text="打开蓝图文件夹" EventType="执行命令" EventData="explorer|&quot;{version_indie}schematics&quot;" ToolTip="装载的蓝图文件要放到这里" />
+            <!-- 这一行原本漏了「|」分隔符，PCL 会把整串当成进程路径去找、点击必定失败；
+                 v1.0.4 起统一改用替换标记写法。 -->
             <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0" ColorType="Highlight"
-                   Text="打开地图文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\saves" ToolTip="小地图的探索记录，换新端的时候要备份放到新端的这里哦！" />
+                   Text="打开地图文件夹" EventType="执行命令" EventData="explorer|&quot;{version_indie}saves&quot;" ToolTip="小地图的探索记录，换新端的时候要备份放到新端的这里哦！" />
         </StackPanel>
         <!-- 这是第三行 -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">

@@ -107,7 +107,7 @@
 | 文件 | 作用 |
 | --- | --- |
 | [`Custom.xaml`](Custom.xaml) | 主页本体。PCL 读取它并渲染出整个界面 |
-| [`Custom.xaml.ini`](Custom.xaml.ini) | 联网更新的**版本标记**，内容就一行 `V 0.0.4`。PCL 会把下载地址里的 `.xaml` 换成 `.xaml.ini` 去取它：版本没变就用本地缓存，变了才重新下载整份主页 |
+| [`Custom.xaml.ini`](Custom.xaml.ini) | 联网更新的**版本标记**，内容就一行 `V 0.0.5`。PCL 会把下载地址里的 `.xaml` 换成 `.xaml.ini` 去取它：版本没变就用本地缓存，变了才重新下载整份主页 |
 | [`docs/customize.md`](docs/customize.md) | 逐项自定义教程：12 处占位符对照表、自定义事件语法、替换标记速查 |
 | [`docs/publish.md`](docs/publish.md) | 联网更新原理、发版流程、图片托管、投稿到 PCL 官方主页预设 |
 | [`assets/`](assets) | 主页用到的两张图（GitCode release 的本地备份） |
@@ -127,20 +127,29 @@
 | 6 | TS 服务器地址与密码 | 区块 2 第 2 个 `MyListItem` | `EventData="标题\|内容"`，内容里换行写 `\n` |
 | 7 | 服规文档链接 | 区块 2 第 3 个 `MyListItem` | 换掉 `EventData` 里的腾讯文档地址 |
 | 8 | 整合包版本公告 | 区块 3 | 直接改那几行 `TextBlock` 的文字 |
-| 9 | 6 个文件夹按钮的路径 | 区块 4 | 见下方说明 |
+| 9 | 6 个文件夹按钮指向的文件夹 | 区块 4 | 已经用 `{version_indie}` 替换标记，换整合包、改版本名都不用动；要打开别的文件夹就改竖线后面那一截 |
 | 10 | 两张图（LOGO、表情包） | 区块 2 / 区块 3 的 `Image` | 换 `Source` 为图片直链；也可以用本仓库 `assets/` 的 raw 地址 |
 
 ### 懒人面板的路径怎么写
 
-现在的路径按本整合包的名字写死了（`SCB 1.20.1 Fabric`），换整合包或改版本名就会点不动。三种写法：
+6 个按钮都用 PCL 的**替换标记**拼路径，所以换整合包、改版本名、开不开版本隔离都不用改：
 
-| 写法 | 例子 | 适合 |
-| --- | --- | --- |
-| 相对路径（现状） | `explorer\| ..\.minecraft\versions\SCB 1.20.1 Fabric\mods` | 固定一个整合包分发 |
-| 绝对路径 | `explorer\| D:\Minecraft\.minecraft\mods` | 玩家目录都一样时 |
-| **替换标记（推荐）** | `explorer\| {version_indie}mods` | 任何人、任何版本名、开不开版本隔离都能用 |
+| 按钮 | 实际写法 |
+| --- | --- |
+| 打开 MOD 文件夹 | `explorer\|&quot;{version_indie}mods&quot;` |
+| 打开材质文件夹 | `explorer\|&quot;{version_indie}resourcepacks&quot;` |
+| 打开光影文件夹 | `explorer\|&quot;{version_indie}shaderpacks&quot;` |
+| 打开 Replay 文件夹 | `explorer\|&quot;{version_indie}replay_recordings&quot;` |
+| 打开蓝图文件夹 | `explorer\|&quot;{version_indie}schematics&quot;` |
+| 打开地图文件夹 | `explorer\|&quot;{version_indie}saves&quot;` |
 
-`{version_indie}` 是 PCL 的替换标记，会变成「当前选中版本的文件夹」（开了版本隔离）或「.minecraft 文件夹」（没开）。后面直接跟文件夹名即可：`{version_indie}mods`、`{version_indie}resourcepacks`、`{version_indie}shaderpacks`、`{version_indie}replay_recordings`、`{version_indie}schematics`、`{version_indie}saves`。
+`{version_indie}` 会被 PCL 替换成「当前选中版本的文件夹」（开了版本隔离）或「.minecraft 文件夹」（没开），末尾自带反斜杠。想打开别的文件夹，把后面那个名字换掉就行。
+
+三个容易踩的点：
+
+- **竖线不能省**：`EventData` 的格式是「命令|参数」。少了 `|`，PCL 会把整串当成程序路径去找，点击必定失败
+- **路径两头加 `&quot;`**：路径里可能有空格（比如版本文件夹叫 `SCB 1.20.1 Fabric`），加引号能避免打开失败，PCL 官方也这么建议
+- **PCL 版本太老时**：如果按钮点了没反应且日志报「执行失败」，说明你的 PCL 不认识这个标记，把路径改回写死的完整路径即可，例如 `explorer\| D:\Minecraft\.minecraft\mods`
 
 更多替换标记（版本号、玩家名、日期、自定义变量……）见 [docs/customize.md](docs/customize.md#替换标记速查)。
 
@@ -150,7 +159,7 @@
 这是 PCL 的安全机制：自定义主页里的 `执行命令` 事件首次运行需要玩家确认。选「继续且今后不再要求确认」即可，之后不会再弹。
 
 **Q：文件夹按钮点了没反应，日志提示执行失败？**
-路径不存在。本主页的路径是按 `SCB 1.20.1 Fabric` 这个整合包名写死的，用别的整合包就会失效。按上面「懒人面板的路径怎么写」改成 `{version_indie}` 写法最省事。
+按顺序排查：① 当前没有选中任何版本，`{version_indie}` 会被替换成空；② 你的 PCL 版本不认识这个替换标记，改回写死的完整路径即可；③ 「执行确认」窗口被点了取消。细节见上面「懒人面板的路径怎么写」。
 
 **Q：两张图（LOGO、表情包）不显示？**
 图片走的是 GitCode release 直链，需要能联网访问 GitCode。本仓库 `assets/` 里有备份，想彻底自给自足可以换成自己的图床直链。
@@ -165,7 +174,7 @@
 - GitHub 的 `raw.githubusercontent.com` 在国内经常连不上，建议换成 jsDelivr 之类的 CDN，或用 GitCode / Gitee 的 raw 地址
 
 **Q：深色主题下顶部提示条的文字看不清？**
-顶部那行文字把颜色写死成了 `Foreground="#FF000000"`（纯黑）。深色主题下改成 `Foreground="{DynamicResource ColorBrush1}"` 就会跟随主题变色。本次整理没有动它，保持原样。
+v1.0.4 已修：文字颜色从写死的 `#FF000000`（纯黑）改成主题画刷 `{DynamicResource ColorBrush1}`，会跟着 PCL 的主题色走。手里如果是旧版文件，按这一行改一下就行。
 
 **Q：会不会把 PCL 改坏？**
 不会。`Custom.xaml` 只是个被读取的独立文件，删掉就恢复 PCL 默认主页，PCL 本体一行都没动。
@@ -178,7 +187,7 @@
 PCL 的联网主页并不是「每次刷新都重新下载」，而是**先比版本号**：
 
 1. 把下载地址填进 `设置 → 个性化 → 主页 → 联网更新`，例如 `.../Custom.xaml`
-2. PCL 把地址里的 `.xaml` 替换成 `.xaml.ini`，去取这个版本标记（也就是本仓库的 `Custom.xaml.ini`，内容是 `V 0.0.4`）
+2. PCL 把地址里的 `.xaml` 替换成 `.xaml.ini`，去取这个版本标记（也就是本仓库的 `Custom.xaml.ini`，内容是 `V 0.0.5`）
 3. 版本号和上次缓存的一致 → 直接用缓存；不一致 → 重新下载整份 `Custom.xaml`
 4. 下载好的主页缓存在 `%TEMP%\PCL\Cache\Custom.xaml`，删掉它就能强制重新下载
 
@@ -186,12 +195,20 @@ PCL 的联网主页并不是「每次刷新都重新下载」，而是**先比�
 
 ## 本次整理改了什么
 
-原仓库的 README 只有更新记录，没有使用说明。本次整理补齐了文档，并修掉了 `Custom.xaml` 里的两个真 Bug（界面结构、配色、文案风格都没动）：
+原仓库的 README 只有更新记录，没有使用说明。整理补齐了文档，并修掉了 `Custom.xaml` 里的几个真问题——界面结构、文案风格、那些梗都没动。
+
+**v1.0.3**
 
 - 修正 `IsSwaped` 拼写 → `IsSwapped`。PCL 源码里旧拼写已被标注为「存在拼写错误」的过时属性
 - 修正「打开地图文件夹」按钮：`EventData` 少了命令与参数之间的 `|` 分隔符，PCL 会把整串当进程路径去找，点击必定失败
 - 修正服规提示的错别字：「不要视图挑战服规」→「不要试图挑战服规」
-- `Custom.xaml.ini` 版本号 `V 0.0.3` → `V 0.0.4`（联网更新要靠它把上面的修复推给玩家）
+- 补齐 README、docs/、CHANGELOG、LICENSE，图片备份进 assets/
+
+**v1.0.4**
+
+- 顶部提示条文字颜色：`#FF000000`（纯黑）→ `{DynamicResource ColorBrush1}`（PCL 标准文字色），深色主题下不再看不清
+- 6 个文件夹按钮改用 `{version_indie}` 替换标记并用 `&quot;` 包住路径：换整合包、改版本名、开不开版本隔离都能正确打开，路径里的空格也不会再导致失败
+- `Custom.xaml.ini` 版本号 `V 0.0.4` → `V 0.0.5`（联网更新要靠它把上面两处修复推给玩家）
 
 完整清单见 [CHANGELOG.md](CHANGELOG.md)。
 
