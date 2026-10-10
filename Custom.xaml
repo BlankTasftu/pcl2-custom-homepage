@@ -1,0 +1,140 @@
+<!--
+    ============================================================
+      PCL2 自定义主页 · SCB 服务器版
+      作者：空白ark（Blank_ark）
+    ============================================================
+
+      【放哪里】 <PCL 所在文件夹>\PCL\Custom.xaml
+                 也就是和 settings.ini 一起的那个 PCL 数据文件夹，不是 .minecraft 文件夹。
+      【怎么用】 PCL → 设置 → 个性化 → 主页 → 选「读取本地文件」→ 点「刷新主页」。
+                 也可以直接把本文件拖进 PCL 窗口加载。
+      【改坏了】 删掉本文件就会恢复 PCL 默认主页，不会影响 PCL 本体。
+
+      【要改的地方】 全文用「【改我】」标出，一共 12 处：
+         1  顶部提示条：服务器名称
+         2  主卡片标题
+         3  主卡片抬头文案
+         4  主卡片声明：服务器名称
+         5  Bilibili 链接：账号地址（目前是个占位弹窗）
+         6  TeamSpeak 链接：服务器地址与密码
+         7  服规链接：文档地址
+         8  公告卡片：整合包版本号
+         9  公告卡片：更新内容
+        10  公告卡片：署名
+        11  懒人面板：6 个文件夹按钮的路径
+        12  两张图片的直链
+
+      【语法提示】 local: 开头的是 PCL 内置控件：MyCard 卡片、MyHint 提示条、
+         MyButton 按钮、MyListItem 列表项。PCL 还支持一批「替换标记」（花括号
+         写法）与各种自定义事件，完整对照表见仓库里的 docs/customize.md。
+
+      【联网更新】 想让玩家的主页自动更新：把本文件和 Custom.xaml.ini 一起放到
+         支持直链下载的地方，在 PCL 里选「联网更新」并填直链。每次改完内容都要
+         把 Custom.xaml.ini 里的版本号往上加，否则 PCL 会认为「已是最新」而继续
+         使用缓存。详见 docs/publish.md。
+    ============================================================
+-->
+
+<!-- ==================== 区块 1 / 4：顶部版本提示条 ==================== -->
+<!-- 常驻在主页最上方，显示当前 PCL 版本。{pcl_version} 会被 PCL 自动替换成版本号。 -->
+<!-- 【改我 1】把下面的 XXX 换成你的服务器名称 -->
+<Border Margin="0,0,0,5" Padding="2,8" BorderThickness="1" Background="{DynamicResource ColorBrush5}" CornerRadius="5" VerticalAlignment="Top" BorderBrush="{DynamicResource ColorBrush3}" Opacity="0.7">
+      <Grid Margin="10,0,0,0">
+               <TextBlock x:Name="NewsHint" FontWeight="Bold" FontSize="12" VerticalAlignment="Center" Foreground="#FF000000">
+                       📰欢迎游玩XXX  您当前PCL启动器版本为{pcl_version}
+               </TextBlock>
+      </Grid>
+</Border>
+
+<!-- ==================== 区块 2 / 4：主卡片（欢迎 + 三条常用链接） ==================== -->
+<!-- 这张卡片没有 CanSwap，永远展开，是新玩家第一眼看到的内容。 -->
+<!-- 【改我 2】卡片标题 -->
+<local:MyCard Title="欢迎使用Blank制作的自定义主页">
+    <StackPanel Margin="25,40,23,8">
+        <!--重要更新提示条-->
+        <local:MyHint Text="将自定义PCL2主页从本地改为了可联网更新" />
+        <!--抬头屁话：【改我 3】-->
+        <TextBlock Margin="0,10,0,8" HorizontalAlignment="Center" Text="服务器模组整合包，丢掉大脑，拯救狗服主，你值得拥有" />
+        <!--整活表情包：【改我 12】换图见 docs/customize.md-->
+        <Image Margin="0,0,0,8" HorizontalAlignment="Center" Height="150" Source="https://gitcode.com/Blank_Ark/PCL2/releases/download/v1.0.0/SCB_Logo.png" />
+        <!--保命声明：【改我 4】-->
+        <TextBlock Margin="0,0,0,8" Foreground="#8C7721" HorizontalAlignment="Center" Text="此版本专供XXX服务器使用" />
+        <TextBlock Margin="20,5,20,0" FontSize="11" HorizontalAlignment="Center" Text="本人并未对PCL本体做任何更改" />
+        <TextBlock Margin="20,5,20,0" FontSize="11" HorizontalAlignment="Center" Text="Modified from Blank_ark" />
+        <!--自媒体账号链接：【改我 5】官方账号还没注册，先用弹窗占位；
+             注册好后把 EventType 改成 打开网页、EventData 改成账号地址即可。-->
+        <local:MyListItem  Margin="-5,2,-5,8"
+	Logo="https://www.bilibili.com/favicon.ico" Title="官方Bilibili账号" Info="别愣着了，快来点个关注！再给宣传视频来个三连！"
+	EventType="弹出窗口" EventData="啊哦，出了点小问题|官方账号暂时还没注册，再等等狗腐竹吧" Type="Clickable" ToolTip="点赞！投币！转发！" />
+        <!--语音软件链接：【改我 6】竖线前面是标题、后面是内容，中间换行用 \n -->
+        <local:MyListItem  Margin="-5,2,-5,8"
+	Logo="https://teamspeak.com/user/themes/teamspeak/images/favicon.ico" Title="本服TS服务器地址和密码" Info="肥肠之好用的语音软件,简洁BUG少,比kook好用多了!"
+	EventType="弹出窗口" EventData="TeamSpeak服务器地址|服务器地址:\n服务器密码:" Type="Clickable" ToolTip="最好加入语音频道哦!有交流才能玩的更开心,汉化和软件下载在懒人功能里哦!~" />
+        <!--服务器规则链接：【改我 7】-->
+        <local:MyListItem  Margin="-5,2,-5,8"
+	Logo="https://docs.gtimg.com/docs-design-resources/document-management/tencent-docs/favicon/application-vnd.tdocs-apps.doc.png" Title="服规（游玩手册）" Info="务必看完！如果违反，按例处罚，解释权归管理组所有"
+	EventType="打开网页" EventData="https://docs.qq.com/doc/DREVQSGZsZHdjRFN1" Type="Clickable" ToolTip="不要试图挑战服规哦！" />
+    </StackPanel>
+</local:MyCard>
+
+<!-- ==================== 区块 3 / 4：整合包版本公告 ==================== -->
+<!-- CanSwap 让卡片可以折叠，IsSwapped 决定它默认是否折叠。
+     注意属性名是 IsSwapped（两个 p）：旧写法 IsSwaped 能被 PCL 识别，但已被标记为过时拼写。 -->
+<local:MyCard Title="整合包版本公告" CanSwap="True" IsSwapped="True">
+    <!--废话公告：【改我 8】【改我 9】【改我 10】-->
+    <StackPanel Margin="25,40,23,8">
+        <TextBlock Margin="0,0,0,4" HorizontalAlignment="Left" Text="当前版本为2.1.0测试版" />
+        <TextBlock Margin="0,0,0,4" HorizontalAlignment="Left" Text="此版本更新了所有模组和加载器前置运行库等" />
+        <TextBlock Margin="0,0,0,4" HorizontalAlignment="Left" Text="此版本模组并未经过完整调试试错，可能会有BUG" />
+        <TextBlock Margin="0,0,0,4" HorizontalAlignment="Left" Text="出现问题BUG直接扣群主说明，我会修复的" />
+        <TextBlock Margin="0,0,0,4" HorizontalAlignment="Left" Text="可能会出现按键冲突问题，如有问题扣群主，下个版本修复" />
+        <TextBlock Margin="0,0,0,4" HorizontalAlignment="Left" Text="祝你当苦力面包人快乐" />
+        <TextBlock Margin="0,0,0,4" HorizontalAlignment="Left" Text="——空白ark" />
+        <!--表情包：【改我 12】-->
+        <Image Margin="0,0,0,8" HorizontalAlignment="Center" Height="150" Source="https://gitcode.com/Blank_Ark/PCL2/releases/download/v1.0.0/emoj.png" />
+    </StackPanel>
+</local:MyCard>
+
+<!-- ==================== 区块 4 / 4：懒人功能面板 ==================== -->
+<local:MyCard Title="懒人功能面板" CanSwap="True" IsSwapped="True">
+    <StackPanel Margin="25,40,23,15">
+        <local:MyHint Margin="0,0,0,7" IsWarn="False" Text="为找不到文件夹的小白准备的打开文件夹功能" />
+        <local:MyHint Margin="0,0,0,7" Text="MOD是.jar文件 材质和光影是.zip文件 不需要解压！" />
+        <!-- ========== 文件夹按钮 ==========
+             【改我 11】EventData 的写法是「命令|参数」：
+               explorer 是 Windows 资源管理器，"|" 后面就是要打开的路径。
+             现在的路径 ..\.minecraft\versions\SCB 1.20.1 Fabric\mods 是按本整合包
+             的名字写死的，换整合包或换版本名就会失效。
+             想让它对任何版本名都生效，可以改用 PCL 的「版本隔离文件夹」替换标记，
+             写法见 docs/customize.md 里的「懒人面板路径怎么写」。 -->
+        <!-- 这是第一行 -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0"
+                   Text="打开MOD文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\mods" ToolTip="安装MOD时.jar文件应该放到这里" />
+            <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0"
+                   Text="打开材质文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\resourcepacks" ToolTip="安装的材质包.zip .rar等压缩包要放到这里" />
+            <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0"
+                   Text="打开光影文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\shaderpacks" ToolTip="安装的光影包.zip .rar等压缩包要放到这里" />
+        </StackPanel>
+        <!-- 这是第二行 -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0" ColorType="Highlight"
+                   Text="打开Replay文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\replay_recordings" ToolTip="回放MOD的录像文件在这里记得发给狗腐竹" />
+            <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0" ColorType="Red"
+                   Text="打开蓝图文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\schematics" ToolTip="装载的蓝图文件要放到这里" />
+            <!-- 修复记录：这一行的 EventData 原本漏了「|」，PCL 会把整串当成进程路径去找，
+                 点击必定失败。现已补上与其它按钮一致的分隔符。 -->
+            <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0" ColorType="Highlight"
+                   Text="打开地图文件夹" EventType="执行命令" EventData="explorer| ..\.minecraft\versions\SCB 1.20.1 Fabric\saves" ToolTip="小地图的探索记录，换新端的时候要备份放到新端的这里哦！" />
+        </StackPanel>
+        <!-- 这是第三行 -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0" ColorType="Red"
+                   Text="下载TeamSpeak 3" EventType="下载文件" EventData="https://files.teamspeak-services.com/releases/client/3.6.2/TeamSpeak3-Client-win64-3.6.2.exe" ToolTip="点此下载安装包,要打开安装不是下载完了就行哦!" />
+            <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0" ColorType="Red"
+                   Text="下载TS3汉化" EventType="下载文件" EventData="https://dl.tmspk.wiki/https:/github.com/VigorousPro/TS3-Translation_zh-CN/releases/download/snapshot/Chinese_Translation_zh-CN.ts3_translation" ToolTip="点此下载汉化包,要打开安装不是下载完了就行哦!" />
+            <local:MyButton Margin="0,0,10,0" Width="140" Height="35" HorizontalAlignment="Left" Padding="13,0,13,0" ColorType="Highlight"
+                   Text="刷新主页" EventType="刷新主页" ToolTip="战术调试" />
+        </StackPanel>
+    </StackPanel>
+</local:MyCard>
